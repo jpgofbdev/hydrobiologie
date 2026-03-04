@@ -371,7 +371,7 @@ let pprLayer = null;
 
 safeOnChange("AAC-checkbox", function (event) {
   if (event.target.checked) {
-    fetchJson("./AAC_CVL.geojson")
+    fetchJson(window.url("AAC_CVL.geojson"))
       .then((data) => {
         aacLayer = L.geoJSON(data, {
           style: { color: "#1f78b4", weight: 2, fillOpacity: 0.3 },
@@ -389,7 +389,7 @@ safeOnChange("AAC-checkbox", function (event) {
 
 safeOnChange("PPR-checkbox", function (event) {
   if (event.target.checked) {
-    fetchJson("./PPR_CVL.geojson")
+    fetchJson(window.url("PPR_CVL.geojson"))
       .then((data) => {
         pprLayer = L.geoJSON(data, {
           style: { color: "#e31a1c", weight: 2, fillOpacity: 0.3 },
@@ -661,6 +661,7 @@ window.refreshRejetsIfChecked = function () {
   if (a?.checked) a.dispatchEvent(new Event("change"));
   if (b?.checked) b.dispatchEvent(new Event("change"));
 };
+
 
 
 
