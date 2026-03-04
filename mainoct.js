@@ -49,7 +49,7 @@ var greenIcon = new L.Icon({
 // Charger les données GeoJSON depuis le serveur
 window.geojsonLayer = undefined;
 
-fetchJson(window.url("bvtopo4326_8cvl.geojson")
+fetchJson(window.url("bvtopo4326_8cvl.geojson"))
   .then((response) => response.json())
   .then((data) => {
     // Créer une couche GeoJSON sans l'ajouter à la carte
