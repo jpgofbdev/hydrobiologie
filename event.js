@@ -747,6 +747,90 @@ window.refreshStationsIfChecked = function () {
 };
 
 
+// --- Menu stations à droite (Leaflet control) ---
+(function addStationsRightMenu() {
+  const map = window.map;
+  if (!map) {
+    console.warn("[stations menu] window.map introuvable");
+    return;
+  }
+
+  const control = L.control({ position: "topright" });
+
+  control.onAdd = function () {
+    const div = L.DomUtil.create("div", "leaflet-bar");
+    div.style.cssText = `
+      background:white;
+      padding:10px 12px;
+      border-radius:10px;
+      box-shadow:0 2px 10px rgba(0,0,0,.15);
+      font:13px/1.2 sans-serif;
+      min-width:220px;
+    `;
+
+    div.innerHTML = `
+      <div style="font-weight:700;margin-bottom:8px;">Stations</div>
+
+      <label style="display:flex;align-items:center;gap:8px;margin:6px 0;cursor:pointer;">
+        <input type="checkbox" id="right-stations-precis">
+        <span title="XY précis"
+              style="display:inline-block;width:14px;height:14px;border-radius:50%;background:#1f78b4;border:2px solid white;box-shadow:0 0 0 1px #1f78b4;"></span>
+        <span>Afficher toutes les stations (XY précis)</span>
+      </label>
+
+      <label style="display:flex;align-items:center;gap:8px;margin:6px 0;cursor:pointer;">
+        <input type="checkbox" id="right-stations-centro">
+        <span title="Centroïde commune"
+              style="display:inline-block;width:14px;height:14px;background:#33a02c;border:2px solid white;transform:rotate(45deg);box-shadow:0 0 0 1px #33a02c;"></span>
+        <span>Afficher toutes les stations (centroïde)</span>
+      </label>
+    `;
+
+    // Empêche le clic sur le menu de déclencher un drag/zoom carte
+    L.DomEvent.disableClickPropagation(div);
+    L.DomEvent.disableScrollPropagation(div);
+
+    return div;
+  };
+
+  control.addTo(map);
+
+  // --- Synchronisation avec les checkboxes "officielles" déjà existantes ---
+  const leftPrecis = document.getElementById("stations-xy-precis-checkbox");
+  const leftCentro = document.getElementById("stations-xy-centro-checkbox");
+  const rightPrecis = document.getElementById("right-stations-precis");
+  const rightCentro = document.getElementById("right-stations-centro");
+
+  if (!leftPrecis || !leftCentro || !rightPrecis || !rightCentro) {
+    console.warn("[stations menu] checkboxes introuvables (gauche/droite)");
+    return;
+  }
+
+  // Initial sync
+  rightPrecis.checked = leftPrecis.checked;
+  rightCentro.checked = leftCentro.checked;
+
+  // Droite -> Gauche
+  rightPrecis.addEventListener("change", () => {
+    leftPrecis.checked = rightPrecis.checked;
+    leftPrecis.dispatchEvent(new Event("change"));
+  });
+
+  rightCentro.addEventListener("change", () => {
+    leftCentro.checked = rightCentro.checked;
+    leftCentro.dispatchEvent(new Event("change"));
+  });
+
+  // Gauche -> Droite (si on coche depuis le menu "déplier les couches")
+  leftPrecis.addEventListener("change", () => {
+    rightPrecis.checked = leftPrecis.checked;
+  });
+
+  leftCentro.addEventListener("change", () => {
+    rightCentro.checked = leftCentro.checked;
+  });
+})();
+
 
 
 
