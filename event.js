@@ -215,47 +215,75 @@ safeOnChange("step-checkbox", function (event) {
 });
 
 
+
+
+// --- STATIONS: charge un GeoJSON de points SANS filtre BBOX ---
+async function loadStationsGeojsonIntoLayer({
+  url,
+  layerGroup,
+  icon,
+  popupFn,
+  logTag = "STATIONS"
+}) {
+  const gj = await fetchJson(url);
+  const features = Array.isArray(gj.features) ? gj.features : [];
+
+  layerGroup.clearLayers();
+
+  let kept = 0;
+
+  for (const f of features) {
+    if (!f?.geometry || f.geometry.type !== "Point") continue;
+
+    const [lon, lat] = f.geometry.coordinates; // GeoJSON = [lon,lat]
+    kept++;
+
+    const props = f.properties || {};
+    const popup = popupFn ? popupFn(props) : "";
+
+    const marker = L.marker([lat, lon], { icon });
+    if (popup) marker.bindPopup(popup);
+    marker.addTo(layerGroup);
+  }
+
+  console.log(`[${logTag}] ${url} -> ${kept}/${features.length} (TOUT)`);
+}
+
 safeOnChange("stations-xy-precis-checkbox", async function (event) {
   if (!event.target.checked) {
-    if (window.stationsXYPrecisLayer) window.stationsXYPrecisLayer.clearLayers();
+    window.stationsXYPrecisLayer.clearLayers();
     return;
   }
 
-  await loadLocalGeojsonPointsIntoLayer({
+  await loadStationsGeojsonIntoLayer({
     url: window.url("data/stations_XY_precis.geojson"),
     layerGroup: window.stationsXYPrecisLayer,
     icon: stationPrecisIcon,
-    ignoreBbox: true,
-popupFn: (props) => {
-  let html = "<table>";
-  for (const k in props) {
-    html += `<tr><td><b>${k}</b></td><td>${props[k]}</td></tr>`;
-  }
-  html += "</table>";
-  return html;
-}
+    popupFn: (props) => {
+      let html = "<table>";
+      for (const k in props) html += `<tr><td><b>${k}</b></td><td>${props[k]}</td></tr>`;
+      html += "</table>";
+      return html;
+    }
   });
 });
 
 safeOnChange("stations-xy-centro-checkbox", async function (event) {
   if (!event.target.checked) {
-    if (window.stationsXYCentroLayer) window.stationsXYCentroLayer.clearLayers();
+    window.stationsXYCentroLayer.clearLayers();
     return;
   }
 
-  await loadLocalGeojsonPointsIntoLayer({
+  await loadStationsGeojsonIntoLayer({
     url: window.url("data/stationsXY_centrocommune.geojson"),
     layerGroup: window.stationsXYCentroLayer,
     icon: stationCentroIcon,
-    ignoreBbox: true,
-popupFn: (props) => {
-  let html = "<table>";
-  for (const k in props) {
-    html += `<tr><td><b>${k}</b></td><td>${props[k]}</td></tr>`;
-  }
-  html += "</table>";
-  return html;
-}
+    popupFn: (props) => {
+      let html = "<table>";
+      for (const k in props) html += `<tr><td><b>${k}</b></td><td>${props[k]}</td></tr>`;
+      html += "</table>";
+      return html;
+    }
   });
 });
 
