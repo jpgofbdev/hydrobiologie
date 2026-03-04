@@ -748,12 +748,18 @@ window.refreshStationsIfChecked = function () {
 
 
 // --- Menu stations à droite (Leaflet control) ---
-(function addStationsRightMenu() {
+// --- Menu stations à droite (Leaflet control) ---
+// Appelé depuis mainoct.js une fois que window.map existe
+window.addStationsRightMenu = function addStationsRightMenu() {
   const map = window.map;
   if (!map) {
-    console.warn("[stations menu] window.map introuvable");
+    console.warn("[stations menu] window.map introuvable (appel trop tôt)");
     return;
   }
+
+  // éviter doublon si on rappelle la fonction
+  if (window.__stationsMenuAdded) return;
+  window.__stationsMenuAdded = true;
 
   const control = L.control({ position: "topright" });
 
@@ -765,7 +771,7 @@ window.refreshStationsIfChecked = function () {
       border-radius:10px;
       box-shadow:0 2px 10px rgba(0,0,0,.15);
       font:13px/1.2 sans-serif;
-      min-width:220px;
+      min-width:240px;
     `;
 
     div.innerHTML = `
@@ -786,16 +792,14 @@ window.refreshStationsIfChecked = function () {
       </label>
     `;
 
-    // Empêche le clic sur le menu de déclencher un drag/zoom carte
     L.DomEvent.disableClickPropagation(div);
     L.DomEvent.disableScrollPropagation(div);
-
     return div;
   };
 
   control.addTo(map);
 
-  // --- Synchronisation avec les checkboxes "officielles" déjà existantes ---
+  // --- Synchronisation avec tes checkboxes "officielles" (menu dépliable) ---
   const leftPrecis = document.getElementById("stations-xy-precis-checkbox");
   const leftCentro = document.getElementById("stations-xy-centro-checkbox");
   const rightPrecis = document.getElementById("right-stations-precis");
@@ -806,7 +810,7 @@ window.refreshStationsIfChecked = function () {
     return;
   }
 
-  // Initial sync
+  // sync initial
   rightPrecis.checked = leftPrecis.checked;
   rightCentro.checked = leftCentro.checked;
 
@@ -821,23 +825,7 @@ window.refreshStationsIfChecked = function () {
     leftCentro.dispatchEvent(new Event("change"));
   });
 
-  // Gauche -> Droite (si on coche depuis le menu "déplier les couches")
-  leftPrecis.addEventListener("change", () => {
-    rightPrecis.checked = leftPrecis.checked;
-  });
-
-  leftCentro.addEventListener("change", () => {
-    rightCentro.checked = leftCentro.checked;
-  });
-})();
-
-
-
-
-
-
-
-
-
-
-
+  // Gauche -> Droite
+  leftPrecis.addEventListener("change", () => (rightPrecis.checked = leftPrecis.checked));
+  leftCentro.addEventListener("change", () => (rightCentro.checked = leftCentro.checked));
+};

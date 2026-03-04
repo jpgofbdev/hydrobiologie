@@ -19,6 +19,11 @@ proj4.defs(
 window.map = L.map("map", { zoomControl: false, doubleClickZoom: false })
   .setView([46.603354, 1.888334], 7);
 
+  // Ajoute le menu stations à droite (défini dans event.js)
+if (typeof window.addStationsRightMenu === "function") {
+  window.addStationsRightMenu();
+}
+
 // Dans un module, alias local
 const map = window.map;
 
