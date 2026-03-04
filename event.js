@@ -80,6 +80,36 @@ var orangeIcon = makeColoredIcon("orange");
 var redIcon = makeColoredIcon("violet");
 var blackIcon = makeColoredIcon("black");
 
+
+// --- HYDROBIOLOGIE: icônes distinctes (SVG) ---
+function svgDivIcon({ shape, fill, stroke = "white", size = 22 }) {
+  const half = size / 2;
+
+  const svg =
+    shape === "diamond"
+      ? `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
+           <polygon points="${half},1 ${size - 1},${half} ${half},${size - 1} 1,${half}"
+                    fill="${fill}" stroke="${stroke}" stroke-width="2"/>
+         </svg>`
+      : `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
+           <circle cx="${half}" cy="${half}" r="${half - 2}"
+                   fill="${fill}" stroke="${stroke}" stroke-width="2"/>
+         </svg>`;
+
+  return L.divIcon({
+    className: "",          // pas de CSS Leaflet par défaut
+    html: svg,
+    iconSize: [size, size],
+    iconAnchor: [half, half], // centré
+    popupAnchor: [0, -half],
+  });
+}
+
+const stationPrecisIcon = svgDivIcon({ shape: "circle", fill: "#1f78b4" });   // bleu rond
+const stationCentroIcon = svgDivIcon({ shape: "diamond", fill: "#33a02c" });  // vert losange
+
+
+
 // STEP markers
 var markersstep = [];
 
@@ -183,6 +213,43 @@ safeOnChange("step-checkbox", function (event) {
     })
     .catch((error) => console.error("[STEP] Error:", error));
 });
+
+
+safeOnChange("stations-xy-precis-checkbox", async function (event) {
+  if (!event.target.checked) {
+    if (window.stationsXYPrecisLayer) window.stationsXYPrecisLayer.clearLayers();
+    return;
+  }
+
+  await loadLocalGeojsonPointsIntoLayer({
+    url: window.url("data/stations_XY_precis.geojson"),
+    layerGroup: window.stationsXYPrecisLayer,
+    icon: stationPrecisIcon,
+    popupFn: (props) => popupFromFields(props, [
+      // adapte si tu as des champs clés (sinon laisse vide, ça affichera rien)
+      { key: "NOM", label: "Nom" },
+      { key: "code_insee", label: "INSEE" }
+    ])
+  });
+});
+
+safeOnChange("stations-xy-centro-checkbox", async function (event) {
+  if (!event.target.checked) {
+    if (window.stationsXYCentroLayer) window.stationsXYCentroLayer.clearLayers();
+    return;
+  }
+
+  await loadLocalGeojsonPointsIntoLayer({
+    url: window.url("data/stationsXY_centrocommune.geojson"),
+    layerGroup: window.stationsXYCentroLayer,
+    icon: stationCentroIcon,
+    popupFn: (props) => popupFromFields(props, [
+      { key: "NOM", label: "Nom" },
+      { key: "code_insee", label: "INSEE" }
+    ])
+  });
+});
+
 
 
 /* ============================================================
@@ -662,6 +729,15 @@ window.refreshRejetsIfChecked = function () {
   if (b?.checked) b.dispatchEvent(new Event("change"));
 };
 
+// --- Refresh stations si BV change ----------------------
+
+window.refreshStationsIfChecked = function () {
+  const a = document.getElementById("stations-xy-precis-checkbox");
+  const b = document.getElementById("stations-xy-centro-checkbox");
+
+  if (a?.checked) a.dispatchEvent(new Event("change"));
+  if (b?.checked) b.dispatchEvent(new Event("change"));
+};
 
 
 

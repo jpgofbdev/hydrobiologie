@@ -27,6 +27,8 @@ window.pollutionLayer = L.layerGroup().addTo(map);
 window.icpeLayer      = L.layerGroup().addTo(map);
 window.stepLayer      = L.layerGroup().addTo(map);
 window.ceLayer        = L.layerGroup().addTo(map);
+window.stationsXYPrecisLayer = L.layerGroup().addTo(map);
+window.stationsXYCentroLayer = L.layerGroup().addTo(map);
 
 // Couches rejets (GeoJSON locaux à la racine)
 window.rejetsStepCollectivitesLayer = L.layerGroup().addTo(map);
@@ -311,6 +313,10 @@ map.on('click', function(e) {
 
 			if (typeof window.refreshRejetsIfChecked === "function") {
   window.refreshRejetsIfChecked();
+}
+
+if (typeof window.refreshStationsIfChecked === "function") {
+  window.refreshStationsIfChecked();
 }
 
             // Rafraîchit les couches dépendantes du BV si elles sont cochées (défini dans event.js)
