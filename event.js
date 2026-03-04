@@ -225,11 +225,14 @@ safeOnChange("stations-xy-precis-checkbox", async function (event) {
     url: window.url("data/stations_XY_precis.geojson"),
     layerGroup: window.stationsXYPrecisLayer,
     icon: stationPrecisIcon,
-    popupFn: (props) => popupFromFields(props, [
-      // adapte si tu as des champs clés (sinon laisse vide, ça affichera rien)
-      { key: "NOM", label: "Nom" },
-      { key: "code_insee", label: "INSEE" }
-    ])
+popupFn: (props) => {
+  let html = "<table>";
+  for (const k in props) {
+    html += `<tr><td><b>${k}</b></td><td>${props[k]}</td></tr>`;
+  }
+  html += "</table>";
+  return html;
+}
   });
 });
 
