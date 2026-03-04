@@ -748,17 +748,15 @@ window.refreshStationsIfChecked = function () {
 
 
 // --- Menu stations à droite (Leaflet control) ---
-// --- Menu stations à droite (Leaflet control) ---
+/// --- Menu stations constant à droite ---
 // Appelé depuis mainoct.js une fois que window.map existe
-window.addStationsRightMenu = function addStationsRightMenu() {
+window.addStationsRightMenu = function () {
   const map = window.map;
   if (!map) {
-    console.warn("[stations menu] window.map introuvable (appel trop tôt)");
+    console.warn("[Stations menu] window.map absent (appel trop tôt)");
     return;
   }
-
-  // éviter doublon si on rappelle la fonction
-  if (window.__stationsMenuAdded) return;
+  if (window.__stationsMenuAdded) return; // anti doublon
   window.__stationsMenuAdded = true;
 
   const control = L.control({ position: "topright" });
@@ -766,12 +764,9 @@ window.addStationsRightMenu = function addStationsRightMenu() {
   control.onAdd = function () {
     const div = L.DomUtil.create("div", "leaflet-bar");
     div.style.cssText = `
-      background:white;
-      padding:10px 12px;
-      border-radius:10px;
+      background:white; padding:10px 12px; border-radius:10px;
       box-shadow:0 2px 10px rgba(0,0,0,.15);
-      font:13px/1.2 sans-serif;
-      min-width:240px;
+      font:13px/1.2 sans-serif; min-width:260px;
     `;
 
     div.innerHTML = `
@@ -779,16 +774,16 @@ window.addStationsRightMenu = function addStationsRightMenu() {
 
       <label style="display:flex;align-items:center;gap:8px;margin:6px 0;cursor:pointer;">
         <input type="checkbox" id="right-stations-precis">
-        <span title="XY précis"
-              style="display:inline-block;width:14px;height:14px;border-radius:50%;background:#1f78b4;border:2px solid white;box-shadow:0 0 0 1px #1f78b4;"></span>
+        <span style="display:inline-block;width:14px;height:14px;border-radius:50%;
+                     background:#1f78b4;border:2px solid white;box-shadow:0 0 0 1px #1f78b4;"></span>
         <span>Afficher toutes les stations (XY précis)</span>
       </label>
 
       <label style="display:flex;align-items:center;gap:8px;margin:6px 0;cursor:pointer;">
         <input type="checkbox" id="right-stations-centro">
-        <span title="Centroïde commune"
-              style="display:inline-block;width:14px;height:14px;background:#33a02c;border:2px solid white;transform:rotate(45deg);box-shadow:0 0 0 1px #33a02c;"></span>
-        <span>Afficher toutes les stations (centroïde)</span>
+        <span style="display:inline-block;width:14px;height:14px;background:#33a02c;
+                     border:2px solid white;transform:rotate(45deg);box-shadow:0 0 0 1px #33a02c;"></span>
+        <span>Afficher toutes les stations (centroïde commune)</span>
       </label>
     `;
 
@@ -799,22 +794,20 @@ window.addStationsRightMenu = function addStationsRightMenu() {
 
   control.addTo(map);
 
-  // --- Synchronisation avec tes checkboxes "officielles" (menu dépliable) ---
+  // Sync avec tes checkboxes existantes (menu “déplier les couches”)
   const leftPrecis = document.getElementById("stations-xy-precis-checkbox");
   const leftCentro = document.getElementById("stations-xy-centro-checkbox");
   const rightPrecis = document.getElementById("right-stations-precis");
   const rightCentro = document.getElementById("right-stations-centro");
 
-  if (!leftPrecis || !leftCentro || !rightPrecis || !rightCentro) {
-    console.warn("[stations menu] checkboxes introuvables (gauche/droite)");
+  if (!leftPrecis || !leftCentro) {
+    console.warn("[Stations menu] checkboxes gauche introuvables");
     return;
   }
 
-  // sync initial
   rightPrecis.checked = leftPrecis.checked;
   rightCentro.checked = leftCentro.checked;
 
-  // Droite -> Gauche
   rightPrecis.addEventListener("change", () => {
     leftPrecis.checked = rightPrecis.checked;
     leftPrecis.dispatchEvent(new Event("change"));
@@ -825,7 +818,6 @@ window.addStationsRightMenu = function addStationsRightMenu() {
     leftCentro.dispatchEvent(new Event("change"));
   });
 
-  // Gauche -> Droite
   leftPrecis.addEventListener("change", () => (rightPrecis.checked = leftPrecis.checked));
   leftCentro.addEventListener("change", () => (rightCentro.checked = leftCentro.checked));
 };

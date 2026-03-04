@@ -20,6 +20,7 @@ window.map = L.map("map", { zoomControl: false, doubleClickZoom: false })
   .setView([46.603354, 1.888334], 7);
 
   // Ajoute le menu stations à droite (défini dans event.js)
+// Affiche le menu stations (défini dans event.js)
 if (typeof window.addStationsRightMenu === "function") {
   window.addStationsRightMenu();
 }
@@ -57,9 +58,7 @@ var greenIcon = new L.Icon({
 window.geojsonLayer = undefined;
 
 fetchJson(window.url("bvtopo4326_8cvl.geojson"))
-  .then((response) => response.json())
   .then((data) => {
-    // Créer une couche GeoJSON sans l'ajouter à la carte
     window.geojsonLayer = L.geoJSON(data);
   })
   .catch((error) =>
