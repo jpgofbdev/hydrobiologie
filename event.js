@@ -246,10 +246,14 @@ safeOnChange("stations-xy-centro-checkbox", async function (event) {
     url: window.url("data/stationsXY_centrocommune.geojson"),
     layerGroup: window.stationsXYCentroLayer,
     icon: stationCentroIcon,
-    popupFn: (props) => popupFromFields(props, [
-      { key: "NOM", label: "Nom" },
-      { key: "code_insee", label: "INSEE" }
-    ])
+popupFn: (props) => {
+  let html = "<table>";
+  for (const k in props) {
+    html += `<tr><td><b>${k}</b></td><td>${props[k]}</td></tr>`;
+  }
+  html += "</table>";
+  return html;
+}
   });
 });
 
