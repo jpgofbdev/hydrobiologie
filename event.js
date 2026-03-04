@@ -225,6 +225,7 @@ safeOnChange("stations-xy-precis-checkbox", async function (event) {
     url: window.url("data/stations_XY_precis.geojson"),
     layerGroup: window.stationsXYPrecisLayer,
     icon: stationPrecisIcon,
+    ignoreBbox: true,
 popupFn: (props) => {
   let html = "<table>";
   for (const k in props) {
@@ -246,6 +247,7 @@ safeOnChange("stations-xy-centro-checkbox", async function (event) {
     url: window.url("data/stationsXY_centrocommune.geojson"),
     layerGroup: window.stationsXYCentroLayer,
     icon: stationCentroIcon,
+    ignoreBbox: true,
 popupFn: (props) => {
   let html = "<table>";
   for (const k in props) {
@@ -644,20 +646,23 @@ function pointInBBoxLonLat(lon, lat) {
 }
 
 async function loadLocalGeojsonPointsIntoLayer({
+  
   url,
   layerGroup,
   icon,
-  popupFn
+  popupFn,
+  ignoreBbox = false
+
 }) {
   if (!layerGroup) {
     if (!window.map) { console.warn("[REJETS] map non initialisée"); return; }
     layerGroup = L.layerGroup().addTo(window.map);
   }
 
-  if (!window.bbox || window.bbox.length !== 4) {
-    console.warn("[REJETS] BBOX absente (BV non défini)");
-    return;
-  }
+if ((!window.bbox || window.bbox.length !== 4) && !ignoreBbox) {
+  console.warn("[REJETS] BBOX absente (BV non défini)");
+  return;
+}
 
   const gj = await fetchJson(url);
   const features = Array.isArray(gj.features) ? gj.features : [];
@@ -698,6 +703,7 @@ safeOnChange("rejet-step-collectivites-checkbox", async function (event) {
   await loadLocalGeojsonPointsIntoLayer({
     url: "./rejet_min_step_collectivites.geojson",
     layerGroup: rejetsStepCollectivitesLayer,
+    ignoreBbox: true,
     icon: orangeIcon,
     popupFn: (props) => popupFromFields(props, [
       { key: "raison_sociale", label: "Raison sociale" },
@@ -716,6 +722,7 @@ safeOnChange("rejet-steu-industries-checkbox", async function (event) {
   await loadLocalGeojsonPointsIntoLayer({
     url: "./rejet_min_steu_industries.geojson",
     layerGroup: rejetsSteuIndustriesLayer,
+    ignoreBbox: true,
     icon: redIcon,
     popupFn: (props) => popupFromFields(props, [
       { key: "Nom Ouvrage Steu", label: "Nom" },
