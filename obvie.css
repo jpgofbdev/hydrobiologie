@@ -60,17 +60,19 @@
             left: 10px;
         }
        
-        #zoom-level {
-            position: absolute;
-            bottom: 10px;
-            right: 50%;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 5px;
-            border-radius: 5px;
-            z-index: 1000;
-            transform: translateX(50%);
-            font-size: 9px;
-        }
+#zoom-level {
+    position: absolute;
+    bottom: 10px;
+    right: 50%;
+    background-color: yellow;              /* surlignage */
+    padding: 8px 14px;
+    border-radius: 6px;
+    z-index: 1000;
+    transform: translateX(50%);
+    font-size: 18px;                        /* environ 2x plus grand */
+    font-weight: bold;
+    border: 2px solid orange;
+}}
 
         .watershed-logo {
             max-width: 40px;
@@ -120,10 +122,22 @@
 }
 
 #toggle-controls {
-    position: absolute; /* Pour positionner au-dessus de la carte */
-    top: 80px; /* Ajustez la position selon vos besoins */
-    left: 20px; /* Ajustez la position selon vos besoins */
-    z-index: 1000; /* Assurez-vous que le bouton est au-dessus de la carte */
+    position: absolute;
+    top: 80px;
+    left: 20px;
+    z-index: 1000;
+
+    font-size: 20px;                /* texte 2x plus grand */
+    padding: 12px 20px;             /* bouton plus gros */
+    background-color: #ff3b3b;      /* couleur vive */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+#toggle-controls:hover {
+    background-color: #d62828;
 }
 
 .sous-titre {
@@ -131,4 +145,5 @@
     font-style: italic;
     font-size: 0.8em; /* Ajuste la taille pour mobile */
     text-align: center; /* Centrer le texte, optionnel */
+
 }
