@@ -127,9 +127,9 @@
     left: 20px;
     z-index: 1000;
 
-    font-size: 20px;                /* texte 2x plus grand */
-    padding: 12px 20px;             /* bouton plus gros */
-    background-color: #ff3b3b;      /* couleur vive */
+    font-size: 15px;                /* texte 2x plus grand */
+    padding: 8px 17px;             /* bouton plus gros */
+    background-color: #234ea6;      /* couleur vive */
     color: white;
     border: none;
     border-radius: 8px;
@@ -137,7 +137,7 @@
     cursor: pointer;
 }
 #toggle-controls:hover {
-    background-color: #d62828;
+    background-color: #395fad;
 }
 
 .sous-titre {
@@ -147,3 +147,4 @@
     text-align: center; /* Centrer le texte, optionnel */
 
 }
+
