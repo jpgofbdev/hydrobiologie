@@ -64,12 +64,12 @@
     position: absolute;
     bottom: 10px;
     right: 50%;
-    background-color: yellow;              /* surlignage */
+    background-color: #f8fca7;              /* surlignage */
     padding: 8px 14px;
     border-radius: 6px;
     z-index: 1000;
     transform: translateX(50%);
-    font-size: 18px;                        /* environ 2x plus grand */
+    font-size: 15px;                        /* environ 2x plus grand */
     font-weight: bold;
     border: 2px solid orange;
 }}
@@ -147,4 +147,5 @@
     text-align: center; /* Centrer le texte, optionnel */
 
 }
+
 
